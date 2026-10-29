@@ -1,37 +1,26 @@
 name: Suggest content
-description: Suggest AI research, a model, a tool, or a practical resource for a future issue
+description: Suggest a source or resource for a future AI newsletter issue
 title: "[Suggestion] "
 body:
   - type: input
     id: name
     attributes:
       label: Name
-      description: What is the name of the model, paper, project, or resource?
+      description: What would you like to suggest?
     validations:
       required: true
   - type: input
     id: link
     attributes:
       label: Primary source
-      description: Link to the original announcement, paper, repository, or tutorial.
-    validations:
-      required: true
-  - type: dropdown
-    id: section
-    attributes:
-      label: Suggested section
-      options:
-        - Models & announcements
-        - Research
-        - Tools & releases
-        - Workflows & learning
+      description: Provide the original source or project link.
     validations:
       required: true
   - type: textarea
     id: description
     attributes:
       label: Why is it useful?
-      description: Explain what changed, why readers should care, and any limitations.
+      description: Briefly explain why readers may find it useful.
     validations:
       required: true
   - type: dropdown

@@ -7,12 +7,6 @@ ARCHIVE_DIR="$BASE_DIR/archive"
 TEMPLATE_FILE="$BASE_DIR/templates/newsletter-template.md"
 
 command=${1:-}
-PUBLICATION_WEEKDAY=${NEWSLETTER_WEEKDAY:-2}
-
-if [[ ! $PUBLICATION_WEEKDAY =~ ^[1-7]$ ]]; then
-    echo "NEWSLETTER_WEEKDAY must be 1 (Monday) through 7 (Sunday)." >&2
-    exit 1
-fi
 
 function format_publication_date() {
     local publication_date=$1
@@ -21,20 +15,6 @@ function format_publication_date() {
     # GNU date (Linux) and BSD date (macOS) use different parsing options.
     date -d "$publication_date" "$format" 2>/dev/null ||
         date -j -f "%Y-%m-%d" "$publication_date" "$format" 2>/dev/null
-}
-
-function get_next_publication_date() {
-    # Always choose the next configured weekday, including a week ahead today.
-    local dow days_ahead
-
-    # Mon=1 ... Sun=7
-    dow=$(date +%u)
-
-    days_ahead=$(((PUBLICATION_WEEKDAY - dow + 7) % 7))
-    if (( days_ahead == 0 )); then days_ahead=7; fi
-
-    date -d "+${days_ahead} days" +%Y-%m-%d 2>/dev/null ||
-        date -v+"${days_ahead}"d +%Y-%m-%d
 }
 
 function ensure_no_future_drafts() {
@@ -98,18 +78,18 @@ function get_next_issue_number() {
 }
 
 function create_draft() {
-    local next_date=${1:-$(get_next_publication_date)}
+    local next_date=${1:-}
     local normalized_date
+
+    if [ -z "$next_date" ]; then
+        echo "Provide an explicit publication date: new YYYY-MM-DD." >&2
+        return 1
+    fi
 
     if [[ ! "$next_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] ||
         ! normalized_date=$(format_publication_date "$next_date" +%Y-%m-%d) ||
         [[ "$normalized_date" != "$next_date" ]]; then
         echo "Invalid publication date: $next_date. Use YYYY-MM-DD." >&2
-        return 1
-    fi
-
-    if [[ $(format_publication_date "$next_date" +%u) != "$PUBLICATION_WEEKDAY" ]]; then
-        echo "Publication date must match NEWSLETTER_WEEKDAY=$PUBLICATION_WEEKDAY: $next_date" >&2
         return 1
     fi
 
@@ -224,7 +204,7 @@ case "$command" in
         archive_draft "${2:-}"
         ;;
     *)
-        echo "Usage: $0 {new [YYYY-MM-DD]|archive [filename]}"
+        echo "Usage: $0 {new YYYY-MM-DD|archive [filename]}"
         exit 1
         ;;
 esac

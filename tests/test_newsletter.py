@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -46,11 +45,10 @@ class NewsletterScriptTests(unittest.TestCase):
         self.assertIn("# That Week in AI #01", draft.read_text())
         self.assertIn("**Publication date**: 2026-10-20", draft.read_text())
 
-    def test_configured_weekday(self):
-        env = dict(os.environ, NEWSLETTER_WEEKDAY="5")
-        result = self.run_script("new", "2026-10-23", env=env)
+    def test_publication_date_is_not_restricted_to_a_weekday(self):
+        result = self.run_script("new", "2026-10-21")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue((self.root / "drafts/2026-10-23-issue-44.md").exists())
+        self.assertTrue((self.root / "drafts/2026-10-21-issue-44.md").exists())
 
     def test_archive_does_not_overwrite_published_issue(self):
         draft = self.root / "drafts/2026-10-20-issue-44.md"
@@ -69,27 +67,11 @@ class NewsletterScriptTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertTrue(external.exists())
 
-    def test_default_on_tuesday_still_uses_next_tuesday(self):
-        bin_dir = self.root / "bin"
-        bin_dir.mkdir()
-        fake_date = bin_dir / "date"
-        fake_date.write_text(
-            '#!/bin/bash\n'
-            'if [[ "$1" == "+%u" ]]; then\n'
-            '    printf "2\\n"\n'
-            'elif [[ "$1" == "-d" && "$2" == "+7 days" ]]; then\n'
-            '    printf "2026-10-27\\n"\n'
-            'else\n'
-            '    exec "$NEWSLETTER_TEST_DATE" "$@"\n'
-            'fi\n'
-        )
-        fake_date.chmod(0o755)
-        env = dict(os.environ)
-        env["NEWSLETTER_TEST_DATE"] = shutil.which("date")
-        env["PATH"] = str(bin_dir) + os.pathsep + env["PATH"]
-        result = self.run_script("new", env=env)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue((self.root / "drafts/2026-10-27-issue-44.md").exists())
+    def test_new_requires_an_explicit_publication_date(self):
+        result = self.run_script("new")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("explicit publication date", result.stderr)
+        self.assertEqual(list((self.root / "drafts").iterdir()), [])
 
     def test_create_and_archive_round_trip(self):
         created = self.run_script("new", "2026-10-20")
@@ -118,7 +100,7 @@ class NewsletterScriptTests(unittest.TestCase):
                 existing.unlink()
 
     def test_invalid_dates_leave_drafts_empty(self):
-        for publication_date in ("2026-02-30", "2026-10-21", "2026-1-6", "tomorrow"):
+        for publication_date in ("2026-02-30", "2026-1-6", "tomorrow"):
             with self.subTest(publication_date=publication_date):
                 result = self.run_script("new", publication_date)
                 self.assertNotEqual(result.returncode, 0)
