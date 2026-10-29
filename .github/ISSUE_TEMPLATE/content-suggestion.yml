@@ -1,0 +1,45 @@
+name: Suggest content
+description: Suggest AI research, a model, a tool, or a practical resource for a future issue
+title: "[Suggestion] "
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      description: What is the name of the model, paper, project, or resource?
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Primary source
+      description: Link to the original announcement, paper, repository, or tutorial.
+    validations:
+      required: true
+  - type: dropdown
+    id: section
+    attributes:
+      label: Suggested section
+      options:
+        - Models & announcements
+        - Research
+        - Tools & releases
+        - Workflows & learning
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Why is it useful?
+      description: Explain what changed, why readers should care, and any limitations.
+    validations:
+      required: true
+  - type: dropdown
+    id: relationship
+    attributes:
+      label: Are you the creator or affiliated with this project?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
