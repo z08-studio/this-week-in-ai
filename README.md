@@ -4,7 +4,17 @@ Public project scaffold for **That Week in AI**, maintained by **z08 Studio**.
 
 [Subscribe on Substack](https://thatweekinai.substack.com/).
 
-The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains a neutral issue template, local draft and archive tools, and a content suggestion form. The AI newsletter's content strategy, editorial sections, and publication schedule will be designed separately. No published editions have been imported.
+The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains a topic-based issue template, local draft and archive tools, and a content suggestion form. No published editions have been imported.
+
+Publish every Monday, covering the preceding Monday through Sunday in `Asia/Shanghai`. The half-open collection window is `[previous Monday 00:00, issue Monday 00:00)`.
+
+## Issue structure
+
+The reader-facing template groups content into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning.
+
+Use short, source-linked bullets describing the change, practical value and relevant conditions. Each event has one primary section; supporting code, discussions and timestamped video links can appear inline. Reddit and YouTube content is categorized by subject. AI & Video covers AI applied to video, while a video about FDE belongs in FDE. Remove empty sections before publication.
+
+The private workflow is source-grouped `generate`, then topic-grouped `format`, followed by the editor's manual edits and copying approved content here. Content collection and generation are not implemented in this public repository.
 
 ## Drafts and archives
 
@@ -13,15 +23,15 @@ Requirements: Bash and the system `date` command on macOS or Linux. No API key i
 Create a local draft with an explicit intended publication date:
 
 ```sh
-bash scripts/newsletter.sh new 2026-11-03
+bash scripts/newsletter.sh new 2026-11-02
 ```
 
-The first issue starts at `01`. The script checks existing drafts and archives before assigning the next number and fills the issue heading and date. Any valid calendar date is accepted; there is no preset publication weekday. An explicit date is required until the schedule is decided. The example date does not announce a publication date.
+The first issue starts at `01`. The script checks existing drafts and archives before assigning the next number and fills the issue heading and date. Choose the intended publication Monday explicitly. The helper currently validates calendar dates without enforcing a weekday. The example date does not announce an actual issue.
 
 Draft Markdown is ignored by Git. Add and review the content manually. After publishing, archive the matching draft:
 
 ```sh
-bash scripts/newsletter.sh archive 2026-11-03-issue-01.md
+bash scripts/newsletter.sh archive 2026-11-02-issue-01.md
 ```
 
 The file moves into `archive/2026/`. Its date should match the actual publication date. Archive contents become public when committed and pushed; only reviewed, published editions belong there. Existing archive files are protected from replacement.
