@@ -13,10 +13,9 @@ class NewsletterScriptTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for directory in ("scripts", "templates", "drafts", "archive/2026"):
+        for directory in ("scripts", "drafts", "archive/2026"):
             (self.root / directory).mkdir(parents=True, exist_ok=True)
-        for filename in ("scripts/newsletter.sh", "templates/newsletter-template.md"):
-            shutil.copy2(REPO_ROOT / filename, self.root / filename)
+        shutil.copy2(REPO_ROOT / "scripts/newsletter.sh", self.root / "scripts/newsletter.sh")
         (self.root / "archive/2026/2026-10-13-issue-43.md").write_text(
             "# That Week in AI #43\n"
         )
@@ -30,20 +29,19 @@ class NewsletterScriptTests(unittest.TestCase):
             text=True,
         )
 
-    def test_explicit_publication_date_and_issue_heading(self):
+    def test_explicit_publication_date_creates_empty_draft(self):
         result = self.run_script("new", "2026-10-20")
         self.assertEqual(result.returncode, 0, result.stderr)
         draft = self.root / "drafts/2026-10-20-issue-44.md"
         self.assertTrue(draft.exists())
-        self.assertEqual(draft.read_text().splitlines()[0], "# That Week in AI #44")
+        self.assertEqual(draft.read_bytes(), b"")
 
     def test_first_issue_starts_at_one(self):
         (self.root / "archive/2026/2026-10-13-issue-43.md").unlink()
         result = self.run_script("new", "2026-10-20")
         self.assertEqual(result.returncode, 0, result.stderr)
         draft = self.root / "drafts/2026-10-20-issue-01.md"
-        self.assertIn("# That Week in AI #01", draft.read_text())
-        self.assertIn("**Publication date**: 2026-10-20", draft.read_text())
+        self.assertEqual(draft.read_bytes(), b"")
 
     def test_publication_date_is_not_restricted_to_a_weekday(self):
         result = self.run_script("new", "2026-10-21")
@@ -77,6 +75,7 @@ class NewsletterScriptTests(unittest.TestCase):
         created = self.run_script("new", "2026-10-20")
         self.assertEqual(created.returncode, 0, created.stderr)
         draft = self.root / "drafts/2026-10-20-issue-44.md"
+        draft.write_text("# Reviewed Formatted output\n\n- [A reviewed item](https://example.com/)\n")
         content = draft.read_text()
 
         archived = self.run_script("archive", draft.name)

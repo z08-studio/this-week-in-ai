@@ -4,13 +4,13 @@ Public project scaffold for **That Week in AI**, maintained by **z08 Studio**.
 
 [Subscribe on Substack](https://thatweekinai.substack.com/).
 
-The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains a topic-based issue template, local draft and archive tools, and a content suggestion form. No published editions have been imported.
+The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains a blank draft starter, local draft and archive tools, and a content suggestion form. No published editions have been imported.
 
 Publish every Monday, covering the preceding Monday through Sunday in `Asia/Shanghai`. The half-open collection window is `[previous Monday 00:00, issue Monday 00:00)`.
 
 ## Issue structure
 
-Picks opens the reader-facing template; the remaining content is grouped into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning.
+The private generator's Formatted template owns the reader-facing layout. Picks opens the edition; the remaining content is grouped into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning. Keep `templates/newsletter-template.md` empty here.
 
 Use one descriptive Markdown link per bullet, normally 10–18 words. Put the useful information, attribution and any essential condition inside the link text; do not append explanations or supporting links. Each event has one primary section. Reddit and YouTube content is categorized by subject. AI & Video covers AI applied to video, while a video about FDE belongs in FDE. Remove empty sections before publication. The initial generator target is about 80 distinct items, including 8 Picks; each item appears once and quantities remain configurable in the private generator.
 
@@ -26,9 +26,9 @@ Create a local draft with an explicit intended publication date:
 bash scripts/newsletter.sh new 2026-11-02
 ```
 
-The first issue starts at `01`. The script checks existing drafts and archives before assigning the next number and fills the issue heading and date. Choose the intended publication Monday explicitly. The helper currently validates calendar dates without enforcing a weekday. The example date does not announce an actual issue.
+The first issue starts at `01`. The script checks existing drafts and archives before assigning the next number, then creates an empty file named with the date and issue number. Choose the intended publication Monday explicitly. The helper currently validates calendar dates without enforcing a weekday. The example date does not announce an actual issue.
 
-Draft Markdown is ignored by Git. Add and review the content manually. After publishing, archive the matching draft:
+Draft Markdown is ignored by Git. Copy the reviewed Formatted output from the private generator into the empty file, then edit it manually. The generator's `output/templates/formatted_template.md` is the sole content template. After publishing, archive the matching draft:
 
 ```sh
 bash scripts/newsletter.sh archive 2026-11-02-issue-01.md
