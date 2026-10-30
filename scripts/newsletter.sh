@@ -16,6 +16,17 @@ function format_publication_date() {
         date -j -f "%Y-%m-%d" "$publication_date" "$format" 2>/dev/null
 }
 
+function get_next_monday() {
+    local dow days_ahead
+
+    # Always choose the following Monday, using the publication timezone.
+    dow=$(TZ=Asia/Shanghai date +%u) || return 1
+    days_ahead=$((8 - dow))
+
+    TZ=Asia/Shanghai date -d "+${days_ahead} days" +%Y-%m-%d 2>/dev/null ||
+        TZ=Asia/Shanghai date -v+"${days_ahead}"d +%Y-%m-%d
+}
+
 function ensure_no_future_drafts() {
     local target_date=$1
     local future_drafts=()
@@ -81,8 +92,7 @@ function create_draft() {
     local normalized_date
 
     if [ -z "$next_date" ]; then
-        echo "Provide an explicit publication date: new YYYY-MM-DD." >&2
-        return 1
+        next_date=$(get_next_monday) || return 1
     fi
 
     if [[ ! "$next_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]] ||
@@ -194,7 +204,7 @@ case "$command" in
         archive_draft "${2:-}"
         ;;
     *)
-        echo "Usage: $0 {new YYYY-MM-DD|archive [filename]}"
+        echo "Usage: $0 {new [YYYY-MM-DD]|archive [filename]}"
         exit 1
         ;;
 esac

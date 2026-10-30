@@ -16,18 +16,24 @@ Review content suggestions through the existing GitHub issue form. Contributions
 
 Requirements: Bash and the system `date` command on macOS or Linux. No API key is required.
 
-Create an empty draft with an explicit intended publication date:
+Create an empty draft for the next Monday in `Asia/Shanghai`:
 
 ```sh
-bash scripts/newsletter.sh new 2026-11-02
+./scripts/newsletter.sh new
 ```
 
-The first issue starts at `01`. The helper checks existing drafts and archives before assigning the next number, then creates an empty file named with the date and issue number. It validates calendar dates without enforcing a weekday; choose the intended Monday explicitly. The example does not announce an issue.
+Running this on a Monday selects the following Monday. To prepare a specific edition, override the default with an explicit publication date:
+
+```sh
+./scripts/newsletter.sh new 2026-11-02
+```
+
+The first issue starts at `01`. The helper checks existing drafts and archives before assigning the next number, then creates an empty file named with the date and issue number. It validates explicit calendar dates without enforcing a weekday. The examples do not announce an issue.
 
 Drafts and their attachments are ignored by Git. Copy reviewed Formatted output into the empty file and edit it manually. After publishing, archive the matching draft:
 
 ```sh
-bash scripts/newsletter.sh archive 2026-11-02-issue-01.md
+./scripts/newsletter.sh archive 2026-11-02-issue-01.md
 ```
 
 The file moves into `archive/2026/`. The filename date should match the actual publication date. Only reviewed, published editions belong in the archive. Existing archive files are protected from replacement.

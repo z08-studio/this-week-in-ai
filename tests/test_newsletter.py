@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -22,7 +23,7 @@ class NewsletterScriptTests(unittest.TestCase):
 
     def run_script(self, *args, env=None):
         return subprocess.run(
-            ["bash", str(self.root / "scripts/newsletter.sh"), *args],
+            [str(self.root / "scripts/newsletter.sh"), *args],
             cwd=self.root,
             env=env,
             capture_output=True,
@@ -65,11 +66,48 @@ class NewsletterScriptTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertTrue(external.exists())
 
-    def test_new_requires_an_explicit_publication_date(self):
-        result = self.run_script("new")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn("explicit publication date", result.stderr)
-        self.assertEqual(list((self.root / "drafts").iterdir()), [])
+    def test_default_date_uses_next_monday_in_shanghai(self):
+        bin_dir = self.root / "bin"
+        bin_dir.mkdir()
+        fake_date = bin_dir / "date"
+        fake_date.write_text(
+            '#!/bin/bash\n'
+            'if [[ "$1" == "+%u" ]]; then\n'
+            '    [[ "$TZ" == "Asia/Shanghai" ]] || exit 1\n'
+            '    printf "%s\\n" "$NEWSLETTER_TEST_WEEKDAY"\n'
+            'elif [[ "$1" == "-d" && "$2" == "+$NEWSLETTER_TEST_DAYS days" ]]; then\n'
+            '    [[ "$NEWSLETTER_TEST_DATE_STYLE" == "gnu" ]] || exit 1\n'
+            '    [[ "$TZ" == "Asia/Shanghai" ]] || exit 1\n'
+            '    printf "%s\\n" "$NEWSLETTER_TEST_NEXT_MONDAY"\n'
+            'elif [[ "$1" == "-v+${NEWSLETTER_TEST_DAYS}d" ]]; then\n'
+            '    [[ "$TZ" == "Asia/Shanghai" ]] || exit 1\n'
+            '    printf "%s\\n" "$NEWSLETTER_TEST_NEXT_MONDAY"\n'
+            'else\n'
+            '    exec "$NEWSLETTER_TEST_DATE" "$@"\n'
+            'fi\n'
+        )
+        fake_date.chmod(0o755)
+        env = dict(os.environ)
+        env["NEWSLETTER_TEST_DATE"] = shutil.which("date")
+        env["PATH"] = str(bin_dir) + os.pathsep + env["PATH"]
+        env["TZ"] = "Pacific/Honolulu"
+
+        for date_style in ("gnu", "bsd"):
+            for weekday, days, next_monday in (
+                (5, 3, "2026-11-02"),
+                (7, 1, "2026-11-02"),
+                (1, 7, "2026-11-09"),
+            ):
+                with self.subTest(date_style=date_style, weekday=weekday):
+                    env["NEWSLETTER_TEST_DATE_STYLE"] = date_style
+                    env["NEWSLETTER_TEST_WEEKDAY"] = str(weekday)
+                    env["NEWSLETTER_TEST_DAYS"] = str(days)
+                    env["NEWSLETTER_TEST_NEXT_MONDAY"] = next_monday
+                    result = self.run_script("new", env=env)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    draft = self.root / "drafts" / f"{next_monday}-issue-44.md"
+                    self.assertEqual(draft.read_bytes(), b"")
+                    draft.unlink()
 
     def test_create_and_archive_round_trip(self):
         created = self.run_script("new", "2026-10-20")
