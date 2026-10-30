@@ -10,3 +10,4 @@
 - Keep tracked documentation and newsletter content in English.
 - Run `bash -n scripts/newsletter.sh` and `python3 -B -m unittest discover -s tests -v` after changing maintenance tools or templates.
 - Publishing to Substack is manual. Do not publish or archive an unpublished edition unless directly requested.
+- This repository belongs to **This Week In Newsletters**. Commit directly to `main` by default; create a pull request only when the user explicitly requests one.
