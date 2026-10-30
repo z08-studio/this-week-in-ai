@@ -4,13 +4,13 @@ Public project scaffold for **That Week in AI**, maintained by **z08 Studio**.
 
 [Subscribe on Substack](https://thatweekinai.substack.com/).
 
-The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains a blank draft starter, local draft and archive tools, and a content suggestion form. No published editions have been imported.
+The repository is named `this-week-in-ai` and follows the repository organization of [This Week in Obsidian](https://github.com/z08-studio/this-week-in-obsidian). It contains local draft and archive tools and a content suggestion form. No published editions have been imported.
 
 Publish every Monday, covering the preceding Monday through Sunday in `Asia/Shanghai`. The half-open collection window is `[previous Monday 00:00, issue Monday 00:00)`.
 
 ## Issue structure
 
-The private generator's Formatted template owns the reader-facing layout. Picks opens the edition; the remaining content is grouped into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning. Keep `templates/newsletter-template.md` empty here.
+The private generator's Formatted template owns the reader-facing layout. Picks opens the edition; the remaining content is grouped into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning.
 
 Use one descriptive Markdown link per bullet, normally 10–18 words. Put the useful information, attribution and any essential condition inside the link text; do not append explanations or supporting links. Each event has one primary section. Reddit and YouTube content is categorized by subject. AI & Video covers AI applied to video, while a video about FDE belongs in FDE. Remove empty sections before publication. The initial generator target is about 80 distinct items, including 8 Picks; each item appears once and quantities remain configurable in the private generator.
 
@@ -53,4 +53,4 @@ GitHub CI runs these checks on Linux and macOS.
 
 ## License
 
-Code, templates, and original repository material are available under the [MIT License](LICENSE). Linked third-party material retains its original ownership and license.
+Code and original repository material are available under the [MIT License](LICENSE). Linked third-party material retains its original ownership and license.

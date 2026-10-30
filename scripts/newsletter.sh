@@ -113,7 +113,7 @@ function create_draft() {
     fi
 
     # Ensure drafts dir exists
-    mkdir -p "$DRAFTS_DIR"
+    mkdir -p "$DRAFTS_DIR" || return 1
 
     # Copy the reviewed Formatted output from the generator into this blank file.
     : > "$filepath" || return 1
@@ -122,7 +122,7 @@ function create_draft() {
 }
 
 function archive_draft() {
-    local file_path=$1
+    local file_path=${1:-}
 
     # If no file specified, try to pick the only one in drafts
     if [ -z "$file_path" ]; then
@@ -170,17 +170,9 @@ function archive_draft() {
         echo "Invalid draft publication date: $publication_date" >&2
         return 1
     fi
-    # Extract year from filename YYYY-MM-DD...
-    local year=$(echo "$filename" | cut -d'-' -f1)
-
-    if [[ ! "$year" =~ ^[0-9]{4}$ ]]; then
-        echo "Could not extract year from filename: $filename"
-        echo "Using current year."
-        year=$(date +%Y)
-    fi
-
+    local year=${publication_date%%-*}
     local target_dir="$ARCHIVE_DIR/$year"
-    mkdir -p "$target_dir"
+    mkdir -p "$target_dir" || return 1
 
     if [ -e "$target_dir/$filename" ]; then
         echo "Archive already exists: $target_dir/$filename" >&2
