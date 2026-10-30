@@ -10,9 +10,9 @@ Publish every Monday, covering the preceding Monday through Sunday in `Asia/Shan
 
 ## Issue structure
 
-The reader-facing template groups content into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning.
+Picks opens the reader-facing template; the remaining content is grouped into Models & APIs; AI Tools & Agents; AI & Video; Images, Audio & Multimodal; FDE & Production Delivery; Research & Evaluation; Workflows & Learning.
 
-Use short, source-linked bullets describing the change, practical value and relevant conditions. Each event has one primary section; supporting code, discussions and timestamped video links can appear inline. Reddit and YouTube content is categorized by subject. AI & Video covers AI applied to video, while a video about FDE belongs in FDE. Remove empty sections before publication.
+Use short, source-linked bullets describing the change, practical value and relevant conditions. Each event has one primary section; supporting code, discussions and timestamped video links can appear inline. Reddit and YouTube content is categorized by subject. AI & Video covers AI applied to video, while a video about FDE belongs in FDE. Remove empty sections before publication. The initial generator target is about 80 distinct items, including 8 Picks; each item appears once and quantities remain configurable in the private generator.
 
 The private workflow is source-grouped `generate`, then topic-grouped `format`, followed by the editor's manual edits and copying approved content here. Content collection and generation are not implemented in this public repository.
 
