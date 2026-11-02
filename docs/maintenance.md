@@ -6,7 +6,7 @@ This repository holds the publication assets, local draft tools, and reviewed ar
 
 Publish every Monday, covering the preceding Monday through Sunday in `Asia/Shanghai`. The collection window is `[previous Monday 00:00, issue Monday 00:00)`.
 
-The generator owns the sole content template at `output/templates/formatted_template.md`. Its workflow is source-grouped `generate`, then topic-grouped `format`, followed by manual review and copying approved Formatted output here. Picks opens the edition. The initial target is about 80 distinct items, including 8 Picks; quantities remain configurable in the generator.
+The generator owns the sole content template at `output/templates/formatted_template.md`. Its workflow is source-grouped `generate`, then topic-grouped `format`, followed by manual review and copying approved Formatted output here. Hot Topics opens the edition. The target is about 60 distinct items, including 15 Hot Topics; quantities remain configurable in the generator. Matching content tags stay together inside each section. Publication-date and coverage metadata are omitted from the reader opening; the archive filename records the actual publication date.
 
 Use one descriptive Markdown link per bullet, normally 10–18 words. Keep useful information and essential qualifications inside the link text. Each event appears once. Categorize Reddit and YouTube material by subject, and remove empty sections before publication.
 
